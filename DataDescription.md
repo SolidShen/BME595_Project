@@ -12,4 +12,3 @@ The data has been prepared for training and validation in the NIFTI format.
 - Some have 13 frames: sub 18 in the unoperated control group.
 ## *Data Location*
 Data are stored at the LIBILAB server.
-gggggggggdddddedfgbnddd
