@@ -95,6 +95,7 @@ for epoch in list(range(epochs)):
 	loss_function = CrossEntropy2d()
 	loss_total = 0
 	for batch_idx, (image,label) in enumerate(train_loader):
+		label = label/255
 		since_temp = time.time()
 		# N * H * W * C
 		real_image = image.unsqueeze(-1)
@@ -121,7 +122,12 @@ for epoch in list(range(epochs)):
 		# loss_ave = torch.mean(loss)
 		# loss function is CrossEntropy2d()
 		# est_label: N * C * H * W; label: N * H * W
-		weight = torch.tensor([100.,1.])
+		weight = torch.FloatTensor(opt.num_classes)
+		sum_weight = torch.sum(label)
+		size = label.size()
+		all_weight = size[0]*size[1]*size[2]
+		weight[0] = sum_weight
+		weight[1] = all_weight-sum_weight
 		weight_cuda = weight.to(device)
 		loss = loss_function.forward(est_label, label, weight_cuda)
 		print('Epoch [{:.0f}/{:.0f}] Batch [{:.0f}/{:.0f}]'.format(epoch+1,epochs,batch_idx+1,total_train/train_batch_size))
