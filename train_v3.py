@@ -22,6 +22,7 @@ import pandas as pd
 import scipy.misc
 from model import UNet 
 from CrossEntropy2d import CrossEntropy2d
+from dice_loss import dice_loss
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-e","--epochs",default=5,help="total number of epochs")
@@ -111,7 +112,7 @@ optimizer = optim.Adam(network_cuda.parameters(),lr = eta)
 # wt_cuda = wt.to(device)
 # loss_function = nn.CrossEntropyLoss(weight=wt_cuda,size_average=True)
 # loss function is CrossEntropy2d()
-loss_function = CrossEntropy2d()
+#loss_function = CrossEntropy2d()
 
 for epoch in list(range(epochs)):
 	# set the start time point
@@ -149,7 +150,7 @@ for epoch in list(range(epochs)):
 		# est_label: N * C * H * W; label: N * H * W
 		weight = torch.tensor([100.,1.])
 		weight_cuda = weight.to(device)
-		loss = loss_function.forward(est_label, label, weight_cuda)
+		loss = dice_loss(est_label, label, 2)
 		print('Epoch [{:.0f}/{:.0f}] Batch [{:.0f}/{:.0f}]'.format(epoch+1,epochs,batch_idx+1,total_train/train_batch_size))
 		print('CrossEntropy Loss {:.8f}'.format(loss))
 		print('DICE {:.8f}'.format(dice))
