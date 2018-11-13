@@ -12,6 +12,17 @@ def dice_loss(input,target,num_of_classes):
     -------------
     '''
     
+    '''
+    smooth = 1.
+def dice_loss(y_pred, y_true):
+    product = nd.multiply(y_pred, y_true)
+    intersection = nd.sum(product)
+    coefficient = (2.*intersection +smooth) / (nd.sum(y_pred)+nd.sum(y_true) +smooth)
+    loss = 1. - coefficient
+    # or "-coefficient"
+    return(loss)
+    '''
+    
     batch_size,H,W = target.size()
     target_one_hot = torch.zeros(batch_size,num_of_classes,H,W)
     for i in range(batch_size):
