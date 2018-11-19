@@ -14,6 +14,10 @@ from data import SegmentationDatasetBDCLSTM
 from CLSTM import BDCLSTM
 from model import *
 
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
+
 # %% import transforms
 
 #UNET_MODEL_FILE = 'unetsmall-100-10-0.001'
@@ -21,10 +25,10 @@ from model import *
 
 # %% Training settings
 parser = argparse.ArgumentParser(description='UNet+BDCLSTM for BraTS Dataset')
-parser.add_argument('--batch-size', type=int, default=4, metavar='N',
+parser.add_argument('--batch_size', type=int, default=4, metavar='N',
                     help='input batch size for training (default: 64)')
 parser.add_argument('--model_params', type=str, default='',help='UNET model params path')
-parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
+parser.add_argument('--test_batch_size', type=int, default=1000, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--train', action='store_true', default=False,
                     help='Argument to train model (default: False)')
@@ -36,23 +40,21 @@ parser.add_argument('--mom', type=float, default=0.99, metavar='MOM',
                     help='SGD momentum (default=0.99)')
 parser.add_argument('--cuda', action='store_true', default=False,
                     help='enables CUDA training (default: False)')
-parser.add_argument('--log-interval', type=int, default=1, metavar='N',
+parser.add_argument('--log_interval', type=int, default=1, metavar='N',
                     help='batches to wait before logging training status')
-parser.add_argument('--test-dataset', action='store_true', default=False,
-                    help='test on smaller dataset (default: False)')
 parser.add_argument('--size', type=int, default=128, metavar='N',
                     help='imsize')
 parser.add_argument('--drop', action='store_true', default=False,
                     help='enables drop')
-parser.add_argument('--data-folder', type=str, default='./Data-Nonzero/', metavar='str',
-                    help='folder that contains data (default: test dataset)')
 parser.add_argument('--num_of_classes', type=int, default=2, help='num of classes for UNET')
 parser.add_argument('--network_depth',type=int, default=5, help='num of network_depth')
 parser.add_argument('--input_channels',type=int, default=1, help='num of input channels for UNET')
+parser.add_argument('--path_image_train',type=str, default='/home/wang4001/dl_project/image_train/',help='train image path')
+parser.add_argument('--path_label_train',type=str, default='/home/wang4001/dl_project/label_train/',help='train label path')
+parser.add_argument('--path_image_val',type=str, default='/home/wang4001/dl_project/image_val',help='test image path')
+parser.add_argument('--path_label_val',type=str, default='/home/wang4001/dl_project/label_val',help='test label path')
 
-import torch
-import torch.nn as nn
-from torch.autograd import Variable
+
 
 
 args = parser.parse_args()
@@ -60,9 +62,16 @@ args.cuda = args.cuda and torch.cuda.is_available()
 if args.cuda:
     print("We are on the GPU!")
 
-DATA_FOLDER = args.data_folder
 
 # %% Loading in the Dataset
+train_dataset = SegmentationDatasetBDCLSTM(args.path_image_train, args.path_label_train, train=True, transform_image=None,transform_label=None) # Supply proper root_dir
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=False)
+
+test_dataset = SegmentationDatasetBDCLSTM(args.path_image_val, args.path_label_val, train=False, transform_image=None,transform_label=None) # Supply proper root_dir
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=args.test_batch_size, shuffle=False)
+
+
+'''
 dset_test = BraTSDatasetLSTM(
     DATA_FOLDER, keywords=MODALITY, transform=tr.ToTensor())
 test_loader = DataLoader(
@@ -72,7 +81,7 @@ dset_train = BraTSDatasetLSTM(
     DATA_FOLDER, keywords=MODALITY, transform=tr.ToTensor())
 train_loader = DataLoader(
     dset_train, batch_size=args.batch_size, shuffle=True, num_workers=1)
-
+'''
 
 # %% Loading in the models
 unet = UNet(args.num_of_classes, in_channels=args.input_channels, depth=args.network_depth)
