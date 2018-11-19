@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import torch
 import torch.optim as optim
-from losses import DICELossMultiClass
+from losses_BDCSLTM import DICELossMultiClass
 
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
