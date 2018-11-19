@@ -29,21 +29,16 @@ class SegmentationDatasetBDCLSTM(torch.utils.data.Dataset):
 		path_image_1, index_image_1 = self.images[index-1]
 		path_image_3, index_image_3 = self.images[index+1]
 		path_label, index_label = self.labels[index]
-		path_label_1, index_label_1 = self.labels[index-1]
-		path_label_3, index_label_3 = self.labels[index+1]
 		
 		image = torch.tensor(self.loader(path_image,header=None).values,dtype = torch.float)
 		image_1 = torch.tensor(self.loader(path_image_1,header=None).values,dtype = torch.float)
 		image_3 = torch.tensor(self.loader(path_image_3,header=None).values,dtype = torch.float)
 		label = torch.tensor(self.loader(path_label,header=None).values)
-		label_1 = torch.tensor(self.loader(path_label_1,header=None).values)
-		label_3 = torch.tensor(self.loader(path_label_3,header=None).values)
+
 		image_cuda = image.to(device)
 		image_1_cuda = image_1.to(device)
 		image_3_cuda = image_3.to(device)
 		label_cuda = label.to(device)
-		label_1_cuda = label_1.to(device)
-		label_3_cuda = label_3.to(device)
 		
 		if self.transform_image:
 			image_cuda = self.transform_image(image_cuda)
@@ -51,8 +46,7 @@ class SegmentationDatasetBDCLSTM(torch.utils.data.Dataset):
 			image_3_cuda = self.transform_image(image_3_cuda)
 		if self.transform_label:
 			label_cuda = self.transform_label(label_cuda)
-			label_1_cuda = self.transform_label(label_1_cuda)
-			label_3_cuda = self.transform_label(label_3_cuda)
-		return image_cuda,image_1_cuda,image_3_cuda,label_cuda,label_1_cuda,label_3_cuda
+
+		return image_1_cuda,image_cuda,image_3_cuda,label_cuda
 	def __len__(self):
 		return len(self.images)
