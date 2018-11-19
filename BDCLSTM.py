@@ -12,17 +12,18 @@ import torchvision.transforms as tr
 
 from data import BraTSDatasetLSTM
 from CLSTM import BDCLSTM
-from models import *
+from model import *
 
 # %% import transforms
 
-UNET_MODEL_FILE = 'unetsmall-100-10-0.001'
-MODALITY = ["flair"]
+#UNET_MODEL_FILE = 'unetsmall-100-10-0.001'
+#MODALITY = ["flair"]
 
 # %% Training settings
 parser = argparse.ArgumentParser(description='UNet+BDCLSTM for BraTS Dataset')
 parser.add_argument('--batch-size', type=int, default=4, metavar='N',
                     help='input batch size for training (default: 64)')
+parser.add_argument('--model_params', type=str, default='',help='UNET model params path')
 parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
                     help='input batch size for testing (default: 1000)')
 parser.add_argument('--train', action='store_true', default=False,
@@ -45,6 +46,9 @@ parser.add_argument('--drop', action='store_true', default=False,
                     help='enables drop')
 parser.add_argument('--data-folder', type=str, default='./Data-Nonzero/', metavar='str',
                     help='folder that contains data (default: test dataset)')
+parser.add_argument('--num_of_classes', type=int, default=2, help='num of classes for UNET')
+parser.add_argument('--network_depth',type=int, default=5, help='num of network_depth')
+parser.add_argument('--input_channels',type=int, default=1, help='num of input channels for UNET')
 
 
 args = parser.parse_args()
@@ -67,8 +71,8 @@ train_loader = DataLoader(
 
 
 # %% Loading in the models
-unet = UNetSmall()
-unet.load_state_dict(torch.load(UNET_MODEL_FILE))
+unet = UNet(args.num_of_classes, in_channels=args.input_channels, depth=args.network_depth)
+unet.load_state_dict(torch.load(args.model_params))
 model = BDCLSTM(input_channels=32, hidden_channels=[32])
 
 if args.cuda:
