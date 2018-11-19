@@ -50,6 +50,10 @@ parser.add_argument('--num_of_classes', type=int, default=2, help='num of classe
 parser.add_argument('--network_depth',type=int, default=5, help='num of network_depth')
 parser.add_argument('--input_channels',type=int, default=1, help='num of input channels for UNET')
 
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
+
 
 args = parser.parse_args()
 args.cuda = args.cuda and torch.cuda.is_available()
