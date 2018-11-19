@@ -35,18 +35,14 @@ class SegmentationDatasetBDCLSTM(torch.utils.data.Dataset):
 		image_3 = torch.tensor(self.loader(path_image_3,header=None).values,dtype = torch.float)
 		label = torch.tensor(self.loader(path_label,header=None).values)
 
-		image_cuda = image.to(device)
-		image_1_cuda = image_1.to(device)
-		image_3_cuda = image_3.to(device)
-		label_cuda = label.to(device)
 		
 		if self.transform_image:
-			image_cuda = self.transform_image(image_cuda)
-			image_1_cuda = self.transform_image(image_1_cuda)
-			image_3_cuda = self.transform_image(image_3_cuda)
+			image = self.transform_image(image)
+			image_1 = self.transform_image(image_1)
+			image_3 = self.transform_image(image_3)
 		if self.transform_label:
-			label_cuda = self.transform_label(label_cuda)
+			label = self.transform_label(label)
 
-		return image_1_cuda,image_cuda,image_3_cuda,label_cuda
+		return image_1,image,image_3,label
 	def __len__(self):
 		return len(self.images)
