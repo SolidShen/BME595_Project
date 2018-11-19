@@ -10,7 +10,7 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torchvision.transforms as tr
 
-from data import BraTSDatasetLSTM
+from data import SegmentationDatasetBDCLSTM
 from CLSTM import BDCLSTM
 from model import *
 
