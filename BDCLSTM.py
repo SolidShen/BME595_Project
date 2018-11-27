@@ -115,9 +115,9 @@ def train(epoch):
 
         optimizer.zero_grad()
 
-        map1 = unet(image1, return_features=True)
-        map2 = unet(image2, return_features=True)
-        map3 = unet(image3, return_features=True)
+        map1 = unet(image1)
+        map2 = unet(image2)
+        map3 = unet(image3)
 
         output = model(map1, map2, map3)
         loss = criterion(output, mask)
