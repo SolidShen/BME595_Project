@@ -165,7 +165,7 @@ eval_val_specificity = torch.zeros(args.epochs,device=device).type(torch.cuda.Fl
 
 # %% Loading in the Dataset
 train_dataset = SegmentationDatasetBDCLSTM(args.path_image_train, args.path_label_train, train=True, transform_image=None,transform_label=None) # Supply proper root_dir
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=False)
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=True)
 
 test_dataset = SegmentationDatasetBDCLSTM(args.path_image_val, args.path_label_val, train=False, transform_image=None,transform_label=None) # Supply proper root_dir
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=args.test_batch_size, shuffle=False)
